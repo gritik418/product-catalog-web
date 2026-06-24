@@ -19,3 +19,9 @@ export interface GetProductsResponseDto {
   products?: Product[];
   count?: number;
 }
+
+export interface GetCategoriesResponseDto {
+  success: boolean;
+  message: string;
+  categories?: string[];
+}

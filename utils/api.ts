@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/constants";
 import axios from "axios";
 
 export interface FetchProductsParams {
@@ -20,7 +21,7 @@ export const fetchProducts = async (data: FetchProductsParams) => {
     }
     const response = await axios({
       method: "GET",
-      url: `http://localhost:8000/api/products?${searchParams.toString()}`,
+      url: `${API_BASE_URL}/products?${searchParams.toString()}`,
       headers: {
         "Content-Type": "application/json",
       },
@@ -35,6 +36,28 @@ export const fetchProducts = async (data: FetchProductsParams) => {
       throw error.response?.data || error;
     }
     console.error("Unexpected error fetching products:", error);
+    throw error;
+  }
+};
+
+export const fetchCategories = async () => {
+  try {
+    const response = await axios({
+      method: "GET",
+      url: `${API_BASE_URL}/products/categories`,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error(
+        "Axios error fetching products:",
+        error.response?.data || error.message,
+      );
+      throw error.response?.data || error;
+    }
     throw error;
   }
 };

@@ -1,26 +1,27 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { ProductItem } from "@/components/ProductItem";
 import {
+  GetCategoriesResponseDto,
+  GetProductsResponseDto,
+  Product,
+} from "@/types";
+import { fetchCategories, fetchProducts } from "@/utils/api";
+import {
+  Apple,
+  BookOpen,
+  Cpu,
+  Layers,
   LayoutGrid,
   List,
-  SlidersHorizontal,
-  ArrowUpDown,
-  Layers,
-  Cpu,
   Shirt,
-  BookOpen,
+  SlidersHorizontal,
   Trophy,
-  Apple,
 } from "lucide-react";
-import { GetProductsResponseDto, Product } from "@/types";
-import { fetchProducts } from "@/utils/api";
+import { useEffect, useMemo, useState } from "react";
 
 type SortOption = "featured" | "price-asc" | "price-desc" | "rating-desc";
-
-const categories = ["Electronics", "Fashion", "Books", "Sports", "Grocery"];
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -29,6 +30,7 @@ export default function Home() {
   const [sortBy, setSortBy] = useState<SortOption>("featured");
   const [hideOutOfStock, setHideOutOfStock] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
 
   // Compute product count per category dynamically from the base product list
   const categoryCounts = useMemo(() => {
@@ -58,6 +60,14 @@ export default function Home() {
     });
   }, [activeCategory]);
 
+  useEffect(() => {
+    fetchCategories().then((data: GetCategoriesResponseDto) => {
+      if (data.success && data.categories) {
+        setCategories(data.categories);
+      }
+    });
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col bg-zinc-50/50 dark:bg-zinc-950 font-sans transition-colors duration-300">
       {/* Navigation Header */}
@@ -66,47 +76,49 @@ export default function Home() {
       {/* Main Content Catalog */}
       <main className="grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Catalog Control Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-zinc-200/50 dark:border-zinc-900 mb-8">
-          <div>
-            <h1 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
-              Product Catalog
-            </h1>
-            <p className="text-xs text-zinc-450 dark:text-zinc-500 font-bold mt-1 uppercase tracking-wider">
-              {products.length} {products.length === 1 ? "Product" : "Products"}{" "}
-              Found
-            </p>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-zinc-200/50 dark:border-zinc-900 mb-8"></div>
+
+        {/* Category Filter Section */}
+        <div className="mb-8 flex justify-between gap-6">
+          <div className="flex items-center gap-2.5 overflow-x-auto pb-1.5 scrollbar-none">
+            {["All", ...categories].map((category) => {
+              const isActive = activeCategory === category;
+
+              const IconComponent = {
+                All: Layers,
+                Electronics: Cpu,
+                Fashion: Shirt,
+                Books: BookOpen,
+                Sports: Trophy,
+                Grocery: Apple,
+              }[category];
+
+              return (
+                <button
+                  key={category}
+                  onClick={() => setActiveCategory(category)}
+                  className={`px-4 py-2.5 text-xs font-semibold rounded-xl border transition-all duration-200 whitespace-nowrap flex items-center gap-2 cursor-pointer ${
+                    isActive
+                      ? "bg-zinc-900 dark:bg-zinc-100 border-zinc-900 dark:border-zinc-100 text-white dark:text-zinc-900 shadow-sm"
+                      : "bg-white dark:bg-zinc-900 border-zinc-150 dark:border-zinc-800/85 text-zinc-600 dark:text-zinc-400 dark:hover:bg-zinc-850 hover:text-zinc-900 dark:hover:text-zinc-200"
+                  }`}
+                >
+                  {IconComponent && (
+                    <IconComponent
+                      className={`h-3.5 w-3.5 ${
+                        isActive
+                          ? "text-white dark:text-zinc-900"
+                          : "text-zinc-400 dark:text-zinc-500"
+                      }`}
+                    />
+                  )}
+                  <span>{category}</span>
+                </button>
+              );
+            })}
           </div>
 
-          {/* Quick Controls Layout */}
           <div className="flex flex-wrap items-center gap-3">
-            {/* Out of Stock filter toggle switch */}
-            <label className="flex items-center gap-2.5 cursor-pointer bg-white dark:bg-zinc-900 border border-zinc-150 dark:border-zinc-800/80 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-zinc-700 dark:text-zinc-350 hover:bg-zinc-50 dark:hover:bg-zinc-900/60 transition-colors">
-              <input
-                type="checkbox"
-                checked={hideOutOfStock}
-                onChange={(e) => setHideOutOfStock(e.target.checked)}
-                className="rounded border-zinc-300 text-indigo-600 focus:ring-indigo-500 bg-transparent"
-              />
-              <span>In Stock Only</span>
-            </label>
-
-            {/* Sort Selector Dropdown */}
-            <div className="relative flex items-center bg-white dark:bg-zinc-900 border border-zinc-150 dark:border-zinc-800/80 rounded-xl px-3 py-1 text-zinc-700 dark:text-zinc-350">
-              <ArrowUpDown className="h-3.5 w-3.5 text-zinc-400 mr-2" />
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as SortOption)}
-                className="bg-transparent text-xs font-semibold border-none focus:outline-none focus:ring-0 py-1.5 pr-2.5 cursor-pointer"
-              >
-                <option value="featured">Featured First</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
-                <option value="rating-desc">Highest Rated</option>
-              </select>
-            </div>
-
-            <div className="h-6 w-px bg-zinc-200 dark:bg-zinc-800 hidden sm:block" />
-
             {/* Layout Grid vs List buttons */}
             <div className="flex items-center bg-white dark:bg-zinc-900 border border-zinc-150 dark:border-zinc-800/80 rounded-xl p-1 shadow-sm">
               <button
@@ -132,58 +144,6 @@ export default function Home() {
                 <List className="h-4 w-4" />
               </button>
             </div>
-          </div>
-        </div>
-
-        {/* Category Filter Section */}
-        <div className="mb-8">
-          <div className="flex items-center gap-2.5 overflow-x-auto pb-1.5 scrollbar-none">
-            {["All", ...categories].map((category) => {
-              const isActive = activeCategory === category;
-              const count = categoryCounts[category] || 0;
-
-              // Get the matching icon components
-              const IconComponent = {
-                All: Layers,
-                Electronics: Cpu,
-                Fashion: Shirt,
-                Books: BookOpen,
-                Sports: Trophy,
-                Grocery: Apple,
-              }[category];
-
-              return (
-                <button
-                  key={category}
-                  onClick={() => setActiveCategory(category)}
-                  className={`px-4 py-2.5 text-xs font-semibold rounded-xl border transition-all duration-200 whitespace-nowrap flex items-center gap-2 cursor-pointer ${
-                    isActive
-                      ? "bg-zinc-900 dark:bg-zinc-100 border-zinc-900 dark:border-zinc-100 text-white dark:text-zinc-900 shadow-sm"
-                      : "bg-white dark:bg-zinc-900 border-zinc-150 dark:border-zinc-800/85 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-850 hover:text-zinc-900 dark:hover:text-zinc-200"
-                  }`}
-                >
-                  {IconComponent && (
-                    <IconComponent
-                      className={`h-3.5 w-3.5 ${
-                        isActive
-                          ? "text-white dark:text-zinc-900"
-                          : "text-zinc-400 dark:text-zinc-500"
-                      }`}
-                    />
-                  )}
-                  <span>{category}</span>
-                  <span
-                    className={`text-[10px] px-1.5 py-0.5 rounded-md font-bold transition-colors ${
-                      isActive
-                        ? "bg-zinc-800 dark:bg-zinc-200 text-zinc-200 dark:text-zinc-800"
-                        : "bg-zinc-100 dark:bg-zinc-800 text-zinc-450 dark:text-zinc-500"
-                    }`}
-                  >
-                    {count}
-                  </span>
-                </button>
-              );
-            })}
           </div>
         </div>
 

@@ -36,7 +36,7 @@ export const ProductItem: React.FC<ProductItemProps> = ({
     return (
       <div className="group bg-white dark:bg-zinc-900 border border-zinc-150 dark:border-zinc-800/80 rounded-2xl p-5 hover:shadow-xl hover:shadow-zinc-200/40 dark:hover:shadow-zinc-950/40 hover:border-zinc-200 dark:hover:border-zinc-700 transition-all duration-300 flex flex-col sm:flex-row gap-6 items-start sm:items-center relative">
         {/* Product Image */}
-        <div className="relative w-full sm:w-44 h-44 rounded-xl overflow-hidden bg-zinc-50 dark:bg-zinc-950 flex-shrink-0 flex items-center justify-center border border-zinc-100 dark:border-zinc-850">
+        <div className="relative w-full sm:w-44 h-44 rounded-xl overflow-hidden bg-zinc-50 dark:bg-zinc-950 shrink-0 flex items-center justify-center border border-zinc-100 dark:border-zinc-850">
           <img
             src={getProductImage(product.category)}
             alt={product.name}
