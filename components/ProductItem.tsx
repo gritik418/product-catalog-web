@@ -4,22 +4,38 @@ import React from "react";
 import { Star, ArrowUpRight } from "lucide-react";
 import { Product } from "@/types";
 
-const IMAGES: Record<string, string> = {
-  grocery:
+const IMAGES: Record<string, string[]> = {
+  grocery: [
     "https://images.unsplash.com/photo-1542838132-92c53300491e?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z3JvY2VyeXxlbnwwfHwwfHx8MA%3D%3D",
-  fashion:
+    "https://images.unsplash.com/photo-1534723452862-4c874018d66d?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGdyb2Nlcnl8ZW58MHx8MHx8fDA%3D",
+    "https://images.unsplash.com/photo-1584473457406-6240486418e9?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGdyb2Nlcnl8ZW58MHx8MHx8fDA%3D",
+  ],
+  fashion: [
     "https://images.unsplash.com/photo-1603400521630-9f2de124b33b?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  electronics:
+    "https://images.unsplash.com/photo-1532453288672-3a27e9be9efd?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGNsb3RoZXN8ZW58MHx8MHx8fDA%3D",
+    "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y2xvdGhlc3xlbnwwfHwwfHx8MA%3D%3D",
+  ],
+  electronics: [
     "https://images.unsplash.com/photo-1529338296731-c4280a44fc48?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGVsZWN0cm9uaWN8ZW58MHx8MHx8fDA%3D",
-  sports:
+    "https://images.unsplash.com/photo-1575125069494-6a0c5819d340?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8d2VhcmFibGVzfGVufDB8fDB8fHww",
+    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aGVhZHBob25lfGVufDB8fDB8fHww",
+  ],
+  sports: [
     "https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8c3BvcnRzfGVufDB8fDB8fHww",
-  books:
+    "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjZ8fHNwb3J0c3xlbnwwfHwwfHx8MA%3D%3D",
+    "https://unsplash.com/photos/group-of-people-playing-soccer-on-soccer-field-8-s5QuUBtyM",
+  ],
+  books: [
     "https://images.unsplash.com/photo-1610116306796-6fea9f4fae38?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Ym9va3N8ZW58MHx8MHx8fDA%3D",
+    "https://images.unsplash.com/photo-1604866830893-c13cafa515d5?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGJvb2tzfGVufDB8fDB8fHww",
+  ],
 };
 
 const getProductImage = (category: string) => {
-  console.log(category);
-  return IMAGES[category.toLowerCase()];
+  return IMAGES[category.toLowerCase()][
+    Math.floor(Math.random() * IMAGES[category.toLowerCase()].length)
+  ];
 };
 
 interface ProductItemProps {

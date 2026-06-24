@@ -28,15 +28,7 @@ export const fetchProducts = async (data: FetchProductsParams) => {
     });
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error(
-        "Axios error fetching products:",
-        error.response?.data || error.message,
-      );
-      throw error.response?.data || error;
-    }
-    console.error("Unexpected error fetching products:", error);
-    throw error;
+    console.log(error);
   }
 };
 
@@ -51,13 +43,6 @@ export const fetchCategories = async () => {
     });
     return response.data;
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error(
-        "Axios error fetching products:",
-        error.response?.data || error.message,
-      );
-      throw error.response?.data || error;
-    }
-    throw error;
+    console.log(error);
   }
 };
